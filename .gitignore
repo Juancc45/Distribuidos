@@ -1,0 +1,4 @@
+**/target/** 
+**/servidor_log.txt
+**/.vscode
+**/maven-status/**

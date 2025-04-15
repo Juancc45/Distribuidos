@@ -5,20 +5,20 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class RecursosDisponibles {
+public class RegistroSolicitudes {
 
     private int salones;
     private int laboratorios;
     private String semestre = "2025-10";
 
-    public RecursosDisponibles() {
+    public RegistroSolicitudes() {
         cargarRecursosDesdeBD();
     }
 
     private void cargarRecursosDesdeBD() {
         String sql = "SELECT salones, laboratorios FROM recursos WHERE semestre = ? LIMIT 1";
 
-        try (Connection conn = ConexionBD.conectar();
+        try (Connection conn = ConexionDB.conectar();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, semestre);
@@ -41,7 +41,7 @@ public class RecursosDisponibles {
     private void guardarRecursosIniciales() {
         String sql = "INSERT INTO recursos (semestre, salones, laboratorios) VALUES (?, ?, ?)";
 
-        try (Connection conn = ConexionBD.conectar();
+        try (Connection conn = ConexionDB.conectar();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, semestre);
@@ -76,7 +76,7 @@ public class RecursosDisponibles {
     private void actualizarRecursos() {
         String sql = "UPDATE recursos SET salones = ?, laboratorios = ? WHERE semestre = ?";
 
-        try (Connection conn = ConexionBD.conectar();
+        try (Connection conn = ConexionDB.conectar();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setInt(1, salones);

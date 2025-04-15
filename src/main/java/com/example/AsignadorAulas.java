@@ -16,12 +16,12 @@ public class AsignadorAulas {
             boolean conMoviles = recursos.asignarConMoviles(solicitud.getSalones(), solicitud.getLaboratorios());
             if (!conMoviles) {
                 Alerta.generar(solicitud);
-                registro.guardarFallo(solicitud);
+                //registro.guardarFallo(solicitud);
                 return false;
             }
         }
 
-        registro.guardarSolicitud(solicitud);
+        //registro.guardarSolicitud(solicitud);
         return true;
     }
 }

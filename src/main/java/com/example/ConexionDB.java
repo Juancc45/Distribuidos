@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class ConexionBD {
+public class ConexionDB {
 
     private static final String DB_URL = "jdbc:mysql://localhost:3306/servidor_distribuido";
     private static final String USER = "tu_usuario";
