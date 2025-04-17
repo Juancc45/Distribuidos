@@ -6,9 +6,9 @@ import java.sql.SQLException;
 
 public class ConexionDB {
 
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/gestion_aulas";
-    private static final String USER = "tu_usuario"; // Reemplaza con tu usuario real de MySQL
-    private static final String PASSWORD = "tu_contraseña"; // Reemplaza con tu contraseña real
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/DistribuidosDB";
+    private static final String USER = "host1"; 
+    private static final String PASSWORD = "12345678"; 
 
     public static Connection conectar() {
         try {
