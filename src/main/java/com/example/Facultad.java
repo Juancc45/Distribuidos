@@ -10,7 +10,7 @@ public class Facultad {
     public static void main(String[] args) {
         try (ZContext context = new ZContext()) {
             ZMQ.Socket socket = context.createSocket(ZMQ.REQ);
-            socket.connect("tcp://10.43.103.67:5556"); // Broker (ROUTER) escucha aquí
+            socket.connect("tcp://10.43.103.67:5555"); // Broker (ROUTER) escucha aquí
 
             Scanner scanner = new Scanner(System.in);
             System.out.println("Cliente Facultad conectado. Enviando solicitudes...");
@@ -26,14 +26,14 @@ public class Facultad {
                 System.out.print("Nombre del Programa: ");
                 String programa = scanner.nextLine();
 
-                System.out.print("Cantidad de salones: ");
-                int salones = Integer.parseInt(scanner.nextLine());
+                System.out.print("Tipo de Aula: ");
+                String tipo = scanner.nextLine();
 
-                System.out.print("Cantidad de laboratorios: ");
+                System.out.print("Cantidad de Aulas/Laboratorios: ");
                 int laboratorios = Integer.parseInt(scanner.nextLine());
 
                 // Construir mensaje
-                String mensaje = semestre + "," + facultad + "," + programa + "," + salones + "," + laboratorios;
+                String mensaje = semestre + "," + facultad + "," + programa + "," + tipo + "," + laboratorios;
 
                 // Enviar solicitud
                 socket.send(mensaje);
