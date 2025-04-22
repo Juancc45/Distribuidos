@@ -97,7 +97,7 @@ public class ServidorCentral {
 
     private static int contarAulas(Connection conn, String tipo, String semestre, String estado) throws SQLException {
         String sql = "SELECT COUNT(*) FROM Aulas a JOIN Programa p ON a.programa_id = p.id " +
-                     "WHERE a.tipo = ? AND a.status = ? AND a.semestre = ?";
+                     "WHERE a.tipo = ? AND a.status = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, tipo);
             ps.setString(2, estado);
@@ -110,7 +110,7 @@ public class ServidorCentral {
     private static void asignarAulas(Connection conn, String programa, String semestre, String tipo, int cantidad) throws SQLException {
         String sql = "UPDATE Aulas SET status = 'Ocupado' WHERE id IN (" +
                      "SELECT id FROM Aulas a JOIN Programa p ON a.programa_id = p.id " +
-                     "WHERE a.tipo = ? AND a.status = 'Disponible' AND a.semestre = ? AND p.nombre = ? LIMIT ?)";
+                     "WHERE a.tipo = ? AND a.status = 'Disponible' AND p.nombre = ? LIMIT ?)";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, tipo);
             ps.setString(2, semestre);
