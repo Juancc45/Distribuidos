@@ -1,43 +1,53 @@
 package com.example;
 
-import org.zeromq.SocketType;
+import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
 
+import java.util.Scanner;
+
 public class Facultad {
+
     public static void main(String[] args) {
-        if (args.length != 6) {
-            System.out.println("Uso: java Facultad <direccion_servidor> <facultad> <semestre> <programa> <salones> <laboratorios>");
-            return;
-        }
+        try (ZContext context = new ZContext()) {
+            ZMQ.Socket socket = context.createSocket(ZMQ.REQ);
+            socket.connect("tcp://10.43.103.67:5556"); // Broker (ROUTER) escucha aquí
 
-        String direccionServidor = args[0];  // Ejemplo: tcp://localhost:5555 si es local
-                                             // o tcp://192.168.1.100:5555 poniendo la ip del pc
-                                             // que corra el proceso de servidor si no es en local
-        String facultad = args[1];
-        String semestre = args[2];
-        String programa = args[3];
-        int salones;
-        int laboratorios;
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("Cliente Facultad conectado. Enviando solicitudes...");
 
-        try {
-            salones = Integer.parseInt(args[4]);
-            laboratorios = Integer.parseInt(args[5]);
-        } catch (NumberFormatException e) {
-            System.out.println("Error: salones y laboratorios deben ser números enteros.");
-            return;
-        }
+            while (true) {
+                System.out.println("\nIngrese los datos de la solicitud:");
+                System.out.print("Semestre: ");
+                String semestre = scanner.nextLine();
 
-        String solicitud = String.format("%s,%s,%s,%d,%d", facultad, semestre, programa, salones, laboratorios);
+                System.out.print("Nombre de la Facultad: ");
+                String facultad = scanner.nextLine();
 
-        try (ZMQ.Context context = ZMQ.context(1)) {
-            ZMQ.Socket requester = context.socket(SocketType.REQ);
-            requester.connect(direccionServidor); // <-- Se conecta usando el argumento
+                System.out.print("Nombre del Programa: ");
+                String programa = scanner.nextLine();
 
-            System.out.println("Enviando solicitud: " + solicitud);
-            requester.send(solicitud);
+                System.out.print("Cantidad de salones: ");
+                int salones = Integer.parseInt(scanner.nextLine());
 
-            String respuesta = requester.recvStr();
-            System.out.println("Respuesta del servidor: " + respuesta);
+                System.out.print("Cantidad de laboratorios: ");
+                int laboratorios = Integer.parseInt(scanner.nextLine());
+
+                // Construir mensaje
+                String mensaje = semestre + "," + facultad + "," + programa + "," + salones + "," + laboratorios;
+
+                // Enviar solicitud
+                socket.send(mensaje);
+
+                // Esperar respuesta
+                String respuesta = socket.recvStr();
+                System.out.println("Respuesta del servidor: " + respuesta);
+
+                System.out.print("\n¿Desea enviar otra solicitud? (s/n): ");
+                String continuar = scanner.nextLine();
+                if (!continuar.equalsIgnoreCase("s")) break;
+            }
+
+            System.out.println("Cliente finalizado.");
         }
     }
 }
