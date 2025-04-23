@@ -26,14 +26,14 @@ public class Facultad {
                 System.out.print("Nombre del Programa: ");
                 String programa = scanner.nextLine();
 
-                System.out.print("Tipo de Aula: ");
-                String tipo = scanner.nextLine();
+                System.out.print("Cantidad de salones: ");
+                 int salones = Integer.parseInt(scanner.nextLine());
 
-                System.out.print("Cantidad de Aulas/Laboratorios: ");
+                 System.out.print("Cantidad de laboratorios: ");
                 int laboratorios = Integer.parseInt(scanner.nextLine());
 
                 // Construir mensaje
-                String mensaje = semestre + "," + facultad + "," + programa + "," + tipo + "," + laboratorios;
+                String mensaje = semestre + "," + facultad + "," + programa + "," + salones + "," + laboratorios;
 
                 // Enviar solicitud
                 socket.send(mensaje);
