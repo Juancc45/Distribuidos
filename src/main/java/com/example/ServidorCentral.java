@@ -7,6 +7,7 @@ import org.zeromq.SocketType;
 import java.sql.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.ArrayList;
 
 public class ServidorCentral {
 
@@ -67,15 +68,15 @@ public class ServidorCentral {
             boolean asignadoLabs = laboratoriosDisponibles >= cantLabs;
 
             if (asignadoSalones) {
-                asignarAulas(conn, programa, semestre, "Salon", cantSalones);
+                asignarAulas(conn, programa, "Salon", cantSalones);
             }
 
             if (!asignadoLabs && (salonesDisponibles - cantSalones) >= (cantLabs - laboratoriosDisponibles)) {
-                asignarAulas(conn, programa, semestre, "Laboratorio", laboratoriosDisponibles);
-                 asignarAulas(conn, programa, semestre, "Salon", cantLabs - laboratoriosDisponibles);
+                asignarAulas(conn, programa, "Laboratorio", laboratoriosDisponibles);
+                 asignarAulas(conn, programa, "Salon", cantLabs - laboratoriosDisponibles);
                 asignadoLabs = true;
             } else if (asignadoLabs) {
-                asignarAulas(conn, programa, semestre, "Laboratorio", cantLabs);
+                asignarAulas(conn, programa, "Laboratorio", cantLabs);
             }
 
             String status;
@@ -107,17 +108,40 @@ public class ServidorCentral {
         }
     }
 
-    private static void asignarAulas(Connection conn, String programa, String semestre, String tipo, int cantidad) throws SQLException {
-        String sql = "UPDATE Aulas SET status = 'Ocupado' WHERE id IN (" +
-                     "SELECT id FROM Aulas a JOIN Programa p ON a.programa_id = p.id " +
-                     "WHERE a.tipo = ? AND a.status = 'Disponible' AND a.semestre = ? AND p.nombre = ? LIMIT ?)";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-             ps.setString(1, tipo);
-             ps.setString(2, semestre);
-             ps.setString(3, programa);
-             ps.setInt(4, cantidad);
-            ps.executeUpdate();
+    private static void asignarAulas(Connection conn, String programa, String tipo, int cantidad) throws SQLException {
+        int program_id = 0;
+
+    // Paso 1: Obtener ID del programa
+    String program_id_query = "SELECT id FROM Programa WHERE nombre = ?";
+    try (PreparedStatement ps = conn.prepareStatement(program_id_query)) {
+        ps.setString(1, programa);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            program_id = rs.getInt(1);
         }
+        rs.close();
+    }
+
+    // Paso 2: Obtener IDs de aulas disponibles
+    ArrayList<Integer> idsDisponibles = new ArrayList<>();
+    String status_query = "SELECT id FROM Aulas WHERE status = 'Disponible'";
+    try (Statement stmt = conn.createStatement();
+         ResultSet rs_status = stmt.executeQuery(status_query)) {
+        while (rs_status.next()) {
+            idsDisponibles.add(rs_status.getInt("id"));
+        }
+    }
+
+    // Paso 3: Actualizar aulas individualmente
+    String update_query = "UPDATE Aulas SET status = ?, programa_id = ? WHERE id = ?";
+    try (PreparedStatement updateStmt = conn.prepareStatement(update_query)) {
+        for (int id : idsDisponibles) {
+            updateStmt.setString(1, "Ocupado");
+            updateStmt.setInt(2, program_id);
+            updateStmt.setInt(3, id);
+            updateStmt.executeUpdate();
+        }
+    }
     }
 
     private static void insertarSolicitud(Connection conn, String semestre, String facultad, String programa,
