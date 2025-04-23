@@ -97,8 +97,7 @@ public class ServidorCentral {
     }
 
     private static int contarAulas(Connection conn, String tipo, String semestre, String estado) throws SQLException {
-        String sql = "SELECT COUNT(*) FROM Aulas a JOIN Programa p ON a.programa_id = p.id " +
-                     "WHERE a.tipo = ? AND a.status = ? AND a.semestre = ?";
+        String sql = "SELECT COUNT(*) FROM Aulas a WHERE a.tipo = ? AND a.status = ? AND a.semestre = ? AND a.programa_id = NULL";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, tipo);
             ps.setString(2, estado);
@@ -147,6 +146,7 @@ public class ServidorCentral {
 
     private static void insertarSolicitud(Connection conn, String semestre, String facultad, String programa,
                                           int cantSalones, int cantLabs, String status) throws SQLException {
+
         String sql = "INSERT INTO Solicitud (semestre, facultad_id, programa_id, cant_salon, cant_lab, status) " +
                      "VALUES (?, " +
                      "(SELECT id FROM Facultad WHERE nombre = ?), " +
