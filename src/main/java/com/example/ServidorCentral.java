@@ -125,8 +125,8 @@ public class ServidorCentral {
     ArrayList<Integer> idsDisponibles = new ArrayList<>();
     String status_query = "SELECT id FROM Aulas WHERE status = 'Disponible' AND tipo = ? LIMIT ?";
     try (PreparedStatement stmt = conn.prepareStatement(status_query)) {
-            stmt.setInt(1, cantidad);
-            stmt.setString(2, tipo);
+            stmt.setString(1, tipo);
+            stmt.setInt(2, cantidad);
             ResultSet rs_status = stmt.executeQuery();
         while (rs_status.next()) {
             idsDisponibles.add(rs_status.getInt("id"));
