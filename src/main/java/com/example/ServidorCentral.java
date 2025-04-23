@@ -123,9 +123,10 @@ public class ServidorCentral {
 
     // Paso 2: Obtener IDs de aulas disponibles
     ArrayList<Integer> idsDisponibles = new ArrayList<>();
-    String status_query = "SELECT id FROM Aulas WHERE status = 'Disponible' LIMIT ?";
+    String status_query = "SELECT id FROM Aulas WHERE status = 'Disponible' AND tipo = ? LIMIT ?";
     try (PreparedStatement stmt = conn.prepareStatement(status_query)) {
             stmt.setInt(1, cantidad);
+            stmt.setString(2, tipo);
             ResultSet rs_status = stmt.executeQuery();
         while (rs_status.next()) {
             idsDisponibles.add(rs_status.getInt("id"));
