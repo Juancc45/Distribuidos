@@ -67,15 +67,15 @@ public class ServidorCentral {
             boolean asignadoLabs = laboratoriosDisponibles >= cantLabs;
 
             if (asignadoSalones) {
-                asignarAulas(conn, programa, "Salon", cantSalones);
+                asignarAulas(conn, programa, semestre, "Salon", cantSalones);
             }
 
             if (!asignadoLabs && (salonesDisponibles - cantSalones) >= (cantLabs - laboratoriosDisponibles)) {
-                asignarAulas(conn, programa, "Laboratorio", laboratoriosDisponibles);
-                asignarAulas(conn, programa, "Salón", cantLabs - laboratoriosDisponibles);
+                asignarAulas(conn, programa, semestre, "Laboratorio", laboratoriosDisponibles);
+                 asignarAulas(conn, programa, semestre, "Salon", cantLabs - laboratoriosDisponibles);
                 asignadoLabs = true;
             } else if (asignadoLabs) {
-                asignarAulas(conn, programa, "Laboratorio", cantLabs);
+                asignarAulas(conn, programa, semestre, "Laboratorio", cantLabs);
             }
 
             String status;
@@ -95,25 +95,27 @@ public class ServidorCentral {
         }
     }
 
-    private static int contarAulas(Connection conn, String tipo, String estado) throws SQLException {
+    private static int contarAulas(Connection conn, String tipo, String semestre, String estado) throws SQLException {
         String sql = "SELECT COUNT(*) FROM Aulas a JOIN Programa p ON a.programa_id = p.id " +
-                     "WHERE a.tipo = ? AND a.status = ?";
+                     "WHERE a.tipo = ? AND a.status = ? AND a.semestre = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, tipo);
             ps.setString(2, estado);
+            ps.setString(3, semestre);
             ResultSet rs = ps.executeQuery();
             return rs.next() ? rs.getInt(1) : 0;
         }
     }
 
-    private static void asignarAulas(Connection conn, String programa,  String tipo, int cantidad) throws SQLException {
+    private static void asignarAulas(Connection conn, String programa, String semestre, String tipo, int cantidad) throws SQLException {
         String sql = "UPDATE Aulas SET status = 'Ocupado' WHERE id IN (" +
                      "SELECT id FROM Aulas a JOIN Programa p ON a.programa_id = p.id " +
-                     "WHERE a.tipo = ? AND a.status = 'Disponible' AND p.nombre = ? LIMIT ?)";
+                     "WHERE a.tipo = ? AND a.status = 'Disponible' AND a.semestre = ? AND p.nombre = ? LIMIT ?)";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, tipo);
-            ps.setString(2, programa);
-            ps.setInt(3, cantidad);
+             ps.setString(1, tipo);
+             ps.setString(2, semestre);
+             ps.setString(3, programa);
+             ps.setInt(4, cantidad);
             ps.executeUpdate();
         }
     }
