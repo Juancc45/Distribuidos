@@ -4,8 +4,8 @@
          http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.universidad</groupId>
-    <artifactId>servidor-central</artifactId>
+    <groupId>com.example</groupId>
+    <artifactId>distribuidos</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
@@ -32,7 +32,7 @@
 
     <build>
         <plugins>
-            <!-- Compilador de Maven -->
+            <!-- Plugin de compilación con Java 17 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -43,14 +43,11 @@
                 </configuration>
             </plugin>
 
-            <!-- Ejecutar una clase con Maven -->
+            <!-- Plugin de ejecución sin clase principal predefinida -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.1.0</version>
-                <configuration>
-                    <mainClass>com.example.ServidorCentral</mainClass>
-                </configuration>
             </plugin>
         </plugins>
     </build>
