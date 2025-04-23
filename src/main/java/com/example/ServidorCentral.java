@@ -97,7 +97,7 @@ public class ServidorCentral {
     }
 
     private static int contarAulas(Connection conn, String tipo, String semestre, String estado) throws SQLException {
-        String sql = "SELECT COUNT(*) FROM Aulas a WHERE a.tipo = ? AND a.status = ? AND a.semestre = ? AND a.programa_id = NULL";
+        String sql = "SELECT COUNT(*) FROM Aulas a WHERE a.tipo = ? AND a.status = ? AND a.semestre = ? AND a.programa_id IS NULL";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, tipo);
             ps.setString(2, estado);
