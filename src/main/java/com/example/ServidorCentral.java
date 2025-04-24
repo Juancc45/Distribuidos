@@ -183,7 +183,7 @@ public class ServidorCentral {
             try(PreparedStatement ps = conn.prepareStatement(sql)){
                 ps.setString(1, facultad);
                 ResultSet rs = ps.executeQuery();
-                if(!rs.next){
+                if(!rs.next()){
                     throw new Exception("La facultad ingresada no existe");
                 }
             }catch(Exception e){
@@ -197,7 +197,7 @@ public class ServidorCentral {
             try(PreparedStatement ps = conn.prepareStatement(sql)){
                 ps.setString(1, programa);
                 ResultSet rs = ps.executeQuery();
-                if(!rs.next){
+                if(!rs.next()){
                     throw new Exception("El Programa ingresado no existe");
                     return false;
                 }
