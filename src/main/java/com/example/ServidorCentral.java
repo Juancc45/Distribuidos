@@ -169,6 +169,8 @@ public class ServidorCentral {
 
     private static boolean validacionData(String data){
         try{
+            Connection conn = ConexionDB.conectar();
+
         String[] partes = data.split(",");
             String semestre = partes[0];
             if(!semestre.equals("2025-10") && !semestre.equals("2025-10")){
@@ -218,6 +220,8 @@ public class ServidorCentral {
                 System.out.println("Error procesando solicitud: " + e.getMessage());
                 return false;
             }
+
+            conn.close();
 
             return true;
 
