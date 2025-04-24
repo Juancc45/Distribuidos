@@ -175,7 +175,6 @@ public class ServidorCentral {
             String semestre = partes[0];
             if(!semestre.equals("2025-10") && !semestre.equals("2025-10")){
                 throw new Exception("Semestre ingresado invalido");
-                return false;
             }
 
             String facultad = partes[1];
@@ -199,7 +198,6 @@ public class ServidorCentral {
                 ResultSet rs = ps.executeQuery();
                 if(!rs.next()){
                     throw new Exception("El Programa ingresado no existe");
-                    return false;
                 }
             }catch(Exception e){
                 e.printStackTrace();
@@ -213,7 +211,6 @@ public class ServidorCentral {
 
             if(cantSalones < 0 || cantLabs < 0){
                 throw new Exception("Cantidad de Salones o Laboratorios invalida");
-                return false;
             }
 
             conn.close();
