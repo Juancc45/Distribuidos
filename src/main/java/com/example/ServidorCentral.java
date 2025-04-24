@@ -193,7 +193,7 @@ public class ServidorCentral {
             }
 
             String programa = partes[2];
-            String sql = "SELECT id FROM Programa WHERE nombre = ?";
+            sql = "SELECT id FROM Programa WHERE nombre = ?";
             try(PreparedStatement ps = conn.prepareStatement(sql)){
                 ps.setString(1, programa);
                 ResultSet rs = ps.executeQuery();
@@ -216,12 +216,14 @@ public class ServidorCentral {
                 return false;
             }
 
+            conn.close();
+
             }catch(Exception e){
                 System.out.println("Error procesando solicitud: " + e.getMessage());
                 return false;
             }
 
-            conn.close();
+            
 
             return true;
 
