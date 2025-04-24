@@ -215,7 +215,7 @@ public class ServidorCentral {
             }
 
             }catch(Exception e){
-                System.out.println("Error procesando solicitud: " + e.getMessage())
+                System.out.println("Error procesando solicitud: " + e.getMessage());
                 return false;
             }
 
