@@ -52,6 +52,10 @@ public class ServidorCentral {
 
     private static String procesarSolicitud(String data) {
         try {
+
+            if(!validacionData(data)){
+                throw new Exception("Los datos ingresados en la solicitud son invalidos!");
+            }
             String[] partes = data.split(",");
             String semestre = partes[0];
             String facultad = partes[1];
@@ -161,5 +165,61 @@ public class ServidorCentral {
             ps.setString(6, status);
             ps.executeUpdate();
         }
+    }
+
+    private static boolean validacionData(String data){
+        try{
+        String[] partes = data.split(",");
+            String semestre = partes[0];
+            if(!semestre.equals("2025-10") && !semestre.equals("2025-10")){
+                throw new Exception("Semestre ingresado invalido");
+                return false;
+            }
+
+            String facultad = partes[1];
+            String sql = "SELECT id FROM Facultad WHERE nombre = ?";
+            try(PreparedStatement ps = conn.prepareStatement(sql)){
+                ps.setString(1, facultad);
+                ResultSet rs = ps.executeQuery();
+                if(!rs.next){
+                    throw new Exception("La facultad ingresada no existe");
+                }
+            }catch(Exception e){
+                e.printStackTrace();
+                System.out.println("Error procesando solicitud: " + e.getMessage());
+                return false;
+            }
+
+            String programa = partes[2];
+            String sql = "SELECT id FROM Programa WHERE nombre = ?";
+            try(PreparedStatement ps = conn.prepareStatement(sql)){
+                ps.setString(1, programa);
+                ResultSet rs = ps.executeQuery();
+                if(!rs.next){
+                    throw new Exception("El Programa ingresado no existe");
+                    return false;
+                }
+            }catch(Exception e){
+                e.printStackTrace();
+                System.out.println("Error procesando solicitud: " + e.getMessage());
+                return false;
+            }
+
+
+            int cantSalones = Integer.parseInt(partes[3]);
+            int cantLabs = Integer.parseInt(partes[4]);
+
+            if(cantSalones < 0 || cantLabs < 0){
+                throw new Exception("Cantidad de Salones o Laboratorios invalida");
+                return false;
+            }
+
+            }catch(Exception e){
+                System.out.println("Error procesando solicitud: " + e.getMessage())
+                return false;
+            }
+
+            return true;
+
     }
 }
